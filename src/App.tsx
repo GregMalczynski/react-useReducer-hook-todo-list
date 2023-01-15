@@ -6,33 +6,33 @@ const App:React.FC = () => {
 
   const colors = ['white', 'lightblue', 'yellow', 'lightgreen', 'pink', 'orange']
 
-  const [ event, updateEvent ] = useReducer((prev: any, next: any) => {
+  const [ state, dispatch ] = useReducer((prev: any, next: any) => {
     return {...prev, ...next}
-  }, {title: '', array: []})
+  }, {value: '', array: []})
 
-  // after click Add Task, update event state ( added to array object with text, isDone and random color - background circle with first task letter )
+  // after click 'Add' task, update state ( added to array object with text, isDone and random color - background circle with first task letter )
 
-  const updateEventFnc = () => {
+  const updateState = () => {
     const randomColor = Math.floor(Math.random()* colors.length)
-    if ( event.title ) {
-      updateEvent({array: [...event.array, {text: event.title, isDone: false, color: colors[randomColor]}]})
-      updateEvent({title: ''})
+    if ( state.title ) {
+      dispatch({array: [...state.array, {text: state.value, isDone: false, color: colors[randomColor]}]})
+      dispatch({value: ''})
     } return
   }
 
-  // after click Delete Task, update event state ( filtered choiced task and remove from list , finally update event )
+  // after click 'Delete' task, filtered choiced task and remove from list , finally update state.
 
-  const deleteFnc = (index: any) => {
-    const newEventArray = [...event.array]
-    const filteredEventArray = newEventArray.filter((item: any) => item.text !== event.array[index].text)
-    updateEvent({array: filteredEventArray})
+  const removeFromState = (index: any) => {
+    const newEventArray = [...state.array]
+    const filteredEventArray = newEventArray.filter((item: any) => item.text !== state.array[index].text)
+    dispatch({array: filteredEventArray})
   }
 
   // after click on task text, toggle choiced task as done / active ( line-through )
 
-  const isDoneFnc = (index: any) => {
-    const filteredEventIsDone = event.array[index].isDone
-    updateEvent(event.array[index].isDone = !filteredEventIsDone)
+  const toggleStateIsDone = (index: any) => {
+    const stateArrayIsDone = state.array[index].isDone
+    dispatch(state.array[index].isDone = !stateArrayIsDone)
   }
 
   return(
@@ -40,27 +40,26 @@ const App:React.FC = () => {
       <h2>Todo List</h2>
       <h3>with useReducer hook</h3>
       <div className='input-wrapper'>
-        <input value={event.title} onChange={(e: any) => updateEvent({title: e.target.value})}/>
-        <button onClick={updateEventFnc}>Add</button>
+        <input value={state.title} onChange={(e: any) => dispatch({title: e.target.value})}/>
+        <button onClick={updateState}>Add</button>
       </div>
         <div className='tasks-wrapper'>
-          {event.array.length ? 
-            event.array.map((item: any, index: any) => 
+          {state.array.length ? 
+            state.array.map((item: any, index: any) => 
               <div 
                   key={index}  
                   className='task'
-                  onClick={() => isDoneFnc(index)} 
+                  onClick={() => toggleStateIsDone(index)} 
               >
                 <div className='task-circle' style={{backgroundColor: `${item.color}`}}><div className='task-circle-letter'>{item.text.charAt(0).toUpperCase()}</div></div>
                 <p style={item.isDone ? {textDecoration: 'line-through'} : {textDecoration: 'none'}}>{item.text}</p>
                 <button 
-                  onClick={() => deleteFnc(index)}>Delete</button>
+                  onClick={() => removeFromState(index)}>Delete</button>
               </div>
             ) : 
             <div>No tasks...</div>
           }  
         </div>
-      
     </div>
   )
 }
