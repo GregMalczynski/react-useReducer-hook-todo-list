@@ -2,11 +2,17 @@ import { useReducer } from "react";
 
 const App:React.FC = () => {
 
+  interface StateProps{
+    text: string,
+    isDone: boolean,
+    color: string
+  }
+
   // Use hook useReducer for manage state / initial state
 
   const colors = ['white', 'lightblue', 'yellow', 'lightgreen', 'pink', 'orange']
 
-  const [ state, dispatch ] = useReducer((prev: any, next: any) => {
+  const [ state, dispatch ] = useReducer((prev: any , next: any) => {
     return {...prev, ...next}
   }, {value: '', array: []})
 
@@ -22,7 +28,7 @@ const App:React.FC = () => {
 
   // after click 'Delete' task, filtered choiced task and remove from list , finally update state.
 
-  const removeFromState = (index: any) => {
+  const removeFromState = (index: number) => {
     const newEventArray = [...state.array]
     const filteredEventArray = newEventArray.filter((item: any) => item.text !== state.array[index].text)
     dispatch({array: filteredEventArray})
@@ -30,22 +36,24 @@ const App:React.FC = () => {
 
   // after click on task text, toggle choiced task as done / active ( line-through )
 
-  const toggleStateIsDone = (index: any) => {
+  const toggleStateIsDone = (index: number) => {
     const stateArrayIsDone = state.array[index].isDone
     dispatch(state.array[index].isDone = !stateArrayIsDone)
   }
+
+  console.log(state)
 
   return(
     <div>
       <h2>Todo List</h2>
       <h3>with useReducer hook</h3>
       <div className='input-wrapper'>
-        <input value={state.title} onChange={(e: any) => dispatch({title: e.target.value})}/>
+        <input value={state.value} onChange={(e: { target: { value: string; }; }) => dispatch({value: e.target.value})}/>
         <button onClick={updateState}>Add</button>
       </div>
         <div className='tasks-wrapper'>
           {state.array.length ? 
-            state.array.map((item: any, index: any) => 
+            state.array.map((item: StateProps, index: number) => 
               <div 
                   key={index}  
                   className='task'
