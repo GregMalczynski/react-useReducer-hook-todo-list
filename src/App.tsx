@@ -20,7 +20,7 @@ const App:React.FC = () => {
 
   const updateState = () => {
     const randomColor = Math.floor(Math.random()* colors.length)
-    if ( state.title ) {
+    if ( state.value ) {
       dispatch({array: [...state.array, {text: state.value, isDone: false, color: colors[randomColor]}]})
       dispatch({value: ''})
     } return
