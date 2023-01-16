@@ -2,7 +2,7 @@ import { useReducer } from "react";
 
 const App:React.FC = () => {
 
-  interface StateProps{
+  interface StateValues {
     text: string,
     isDone: boolean,
     color: string
@@ -13,12 +13,13 @@ const App:React.FC = () => {
   const colors = ['white', 'lightblue', 'yellow', 'lightgreen', 'pink', 'orange']
 
   const [ state, dispatch ] = useReducer((prev: any , next: any) => {
+    console.log('next ' + next)
     return {...prev, ...next}
   }, {value: '', array: []})
 
   // after click 'Add' task, update state ( added to array object with text, isDone and random color - background circle with first task letter )
 
-  const updateState = () => {
+  const updateState: React.MouseEventHandler<HTMLButtonElement> = () => {
     const randomColor = Math.floor(Math.random()* colors.length)
     if ( state.value ) {
       dispatch({array: [...state.array, {text: state.value, isDone: false, color: colors[randomColor]}]})
@@ -30,7 +31,7 @@ const App:React.FC = () => {
 
   const removeFromState = (index: number) => {
     const newEventArray = [...state.array]
-    const filteredEventArray = newEventArray.filter((item: any) => item.text !== state.array[index].text)
+    const filteredEventArray = newEventArray.filter((item: {text: string} ) => item.text !== state.array[index].text)
     dispatch({array: filteredEventArray})
   }
 
@@ -48,12 +49,12 @@ const App:React.FC = () => {
       <h2>Todo List</h2>
       <h3>with useReducer hook</h3>
       <div className='input-wrapper'>
-        <input value={state.value} onChange={(e: { target: { value: string; }; }) => dispatch({value: e.target.value})}/>
+        <input value={state.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch({value: e.target.value})}/>
         <button onClick={updateState}>Add</button>
       </div>
         <div className='tasks-wrapper'>
           {state.array.length ? 
-            state.array.map((item: StateProps, index: number) => 
+            state.array.map((item: StateValues, index: number) => 
               <div 
                   key={index}  
                   className='task'
